@@ -70,6 +70,38 @@ const tasks = [
     createdAt: new Date(),
     dueAt: new Date(),
   },
+  {
+    id: "8",
+    title: "Clear iron ores",
+    status: false,
+    deleted: false,
+    createdAt: new Date(),
+    dueAt: new Date(),
+  },
+  {
+    id: "9",
+    title: "Clear iron ores",
+    status: false,
+    deleted: false,
+    createdAt: new Date(),
+    dueAt: new Date(),
+  },
+  {
+    id: "10",
+    title: "Clear iron ores",
+    status: false,
+    deleted: false,
+    createdAt: new Date(),
+    dueAt: new Date(),
+  },
+  {
+    id: "11",
+    title: "Clear iron ores",
+    status: false,
+    deleted: false,
+    createdAt: new Date(),
+    dueAt: new Date(),
+  },
 ];
 
 const Home: NextPage = () => {
@@ -92,13 +124,28 @@ const Home: NextPage = () => {
               display: "flex",
               flexDirection: "column",
               flex: 1,
+              mb: 2,
             }}
           >
             <Coins value={1050} />
             <BaseTextField label="Search" value={search} setValue={setSearch} />
-            <Toolbar header="Today" canExport={true} canCreate={true} />
+            <Toolbar
+              header="Today"
+              canExport={true}
+              canCreate={true}
+              data={tasks.filter(
+                (task) =>
+                  !search ||
+                  task.title.toLowerCase().includes(search.toLowerCase())
+              )}
+            />
             {tasks
               .filter((task) => moment(task.dueAt).isSame(new Date(), "day"))
+              .filter(
+                (task) =>
+                  !search ||
+                  task.title.toLowerCase().includes(search.toLowerCase())
+              )
               .map((task) => (
                 <Task
                   title={task.title}
@@ -118,6 +165,11 @@ const Home: NextPage = () => {
             </Divider>
             {tasks
               .filter((task) => !moment(task.dueAt).isSame(new Date(), "day"))
+              .filter(
+                (task) =>
+                  !search ||
+                  task.title.toLowerCase().includes(search.toLowerCase())
+              )
               .map((task) => (
                 <Task
                   title={task.title}

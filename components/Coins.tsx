@@ -1,6 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import coins from "../public/coins.png";
+import Store from "./Store";
+import { useState } from "react";
 
 type AppProps = {
   value: number;
@@ -8,6 +10,8 @@ type AppProps = {
 
 // Coins component
 const Coins = ({ value }: AppProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Box
       sx={{
@@ -26,6 +30,7 @@ const Coins = ({ value }: AppProps) => {
         }}
         onClick={() => {
           // on click, open the store modal
+          setOpen(true);
         }}
       >
         {value}
@@ -37,8 +42,10 @@ const Coins = ({ value }: AppProps) => {
         height={32}
         onClick={() => {
           // on click, open the store modal
+          setOpen(true);
         }}
       />
+      <Store open={open} setOpen={setOpen} coins={value} />
     </Box>
   );
 };

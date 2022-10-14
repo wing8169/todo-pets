@@ -16,6 +16,10 @@ const Panel = ({ children }: AppProps) => (
       display: "flex",
       justifyContent: "flex-start",
       alignItems: "flex-start",
+      flexDirection: {
+        xs: "column",
+        sm: "row",
+      },
     }}
   >
     {children}

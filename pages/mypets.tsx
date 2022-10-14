@@ -9,46 +9,7 @@ import Coins from "../components/Coins";
 import { Box } from "@mui/material";
 import BaseTextField from "../components/BaseTextField";
 import PetCard from "../components/PetCard";
-
-const pets = [
-  {
-    src: "bulbasaur.jpg",
-    title:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard2",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard3",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard4",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard5",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard6",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard7",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard8",
-  },
-  {
-    src: "bulbasaur.jpg",
-    title: "PetCard9",
-  },
-];
+import pets from "../public/pokemons.json";
 
 const MyPets: NextPage = () => {
   const [search, setSearch] = useState("");
@@ -81,9 +42,19 @@ const MyPets: NextPage = () => {
                 justifyContent: "center",
               }}
             >
-              {pets.map((pet) => (
-                <PetCard src={pet.src} title={pet.title} key={pet.title} />
-              ))}
+              {Object.keys(pets)
+                .filter(
+                  (title) =>
+                    !search ||
+                    title.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((title) => (
+                  <PetCard
+                    src={pets[title as keyof typeof pets]}
+                    title={title}
+                    key={title}
+                  />
+                ))}
             </Box>
           </Box>
         </Panel>

@@ -14,7 +14,7 @@ const Background = ({ children }: AppProps) => (
       backgroundRepeat: "no-repeat",
       minWidth: "100vw",
       minHeight: "100vh",
-      padding: { xs: 0, sm: 3 },
+      padding: { xs: 0, sm: 3, md: 5, lg: 10, xl: 20 },
       display: "flex",
     }}
   >

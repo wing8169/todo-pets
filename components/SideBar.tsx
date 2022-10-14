@@ -16,21 +16,44 @@ const SideBar = ({}: AppProps) => {
   return (
     <Box
       sx={{
-        width: 250,
+        width: {
+          xs: "100%",
+          sm: 250,
+        },
         height: "100%",
         background:
           "linear-gradient(117.15deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 100%)",
         backdropFilter: "blur(40px)",
         borderRadius: "12px 0px 0px 12px",
         display: "flex",
-        flexDirection: "column",
+        flexDirection: {
+          xs: "row",
+          sm: "column",
+        },
         alignItems: "center",
-        paddingTop: 4,
-        paddingBottom: 4,
+        paddingTop: {
+          xs: 0,
+          sm: 4,
+        },
+        paddingBottom: {
+          xs: 0,
+          sm: 4,
+        },
         gap: 3,
       }}
     >
-      <Image src={logo} />
+      <Box
+        sx={{
+          width: {
+            xs: 64,
+            sm: "100%",
+            display: "flex",
+            justifyContent: "center",
+          },
+        }}
+      >
+        <Image src={logo} />
+      </Box>
       {sideBarItems.map((sideBarItem) => (
         <SideBarItem
           src={sideBarItem.src}
