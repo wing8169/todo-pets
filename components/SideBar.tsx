@@ -30,6 +30,10 @@ const SideBar = ({}: AppProps) => {
           xs: "row",
           sm: "column",
         },
+        justifyContent: {
+          xs: "space-between",
+          sm: "flex-start",
+        },
         alignItems: "center",
         paddingTop: {
           xs: 0,
@@ -54,14 +58,26 @@ const SideBar = ({}: AppProps) => {
       >
         <Image src={logo} />
       </Box>
-      {sideBarItems.map((sideBarItem) => (
-        <SideBarItem
-          src={sideBarItem.src}
-          text={sideBarItem.text}
-          route={sideBarItem.route}
-          key={sideBarItem.text}
-        />
-      ))}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: {
+            xs: "row",
+            sm: "column",
+          },
+          gap: 3,
+          mr: 5,
+        }}
+      >
+        {sideBarItems.map((sideBarItem) => (
+          <SideBarItem
+            src={sideBarItem.src}
+            text={sideBarItem.text}
+            route={sideBarItem.route}
+            key={sideBarItem.text}
+          />
+        ))}
+      </Box>
     </Box>
   );
 };

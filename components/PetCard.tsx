@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
-import coins from "../public/coins.png";
+import Lottie from "lottie-react";
+import stars from "../public/stars.json";
 
 type AppProps = {
   src: string;
@@ -27,8 +28,17 @@ const PetCard = ({ src, title }: AppProps) => {
         width: 200,
         height: 220,
         borderRadius: 3,
+        boxShadow: "10px 10px 89px -39px rgba(0,0,0,0.75)",
       }}
     >
+      <Lottie
+        animationData={stars}
+        loop={true}
+        style={{
+          position: "absolute",
+          zIndex: 100,
+        }}
+      />
       <Image
         loader={ImageLoader}
         src={src}

@@ -10,11 +10,15 @@ import Background from "../components/Background";
 import Panel from "../components/Panel";
 import SideBar from "../components/SideBar";
 import Coins from "../components/Coins";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import BaseTextField from "../components/BaseTextField";
 import PetCard from "../components/PetCard";
 import pets from "../public/pokemons.json";
 import { User } from "../interfaces";
+import { Socket } from "socket.io-client";
+import io from "socket.io-client";
+
+let socket: Socket;
 
 const MyPets: NextPage = ({
   ip,
@@ -26,6 +30,33 @@ const MyPets: NextPage = ({
     coins: 0,
     pets: [],
   });
+
+  // on site load, connect to the socket server
+  useEffect(() => {
+    socketInitializer();
+    // clean up socket
+    return function cleanup() {
+      console.log("cleaning up socket");
+      try {
+        socket.disconnect();
+      } catch (err) {
+        // if socket disconnect fails, it is fine
+      }
+    };
+  }, []);
+
+  const socketInitializer = async () => {
+    // connect to socket server
+    await fetch("/api/sockets");
+    socket = io();
+
+    // on user event
+    socket.on("user", (user) => {
+      if (user.ipAddress !== ip) return; // skip user that is not owned
+      // update coins and pets
+      setUser((prev) => ({ ...prev, coins: user.coins, pets: user.pets }));
+    });
+  };
 
   useEffect(() => {
     // on site load, create / get user data by ip address
@@ -69,7 +100,16 @@ const MyPets: NextPage = ({
               flex: 1,
             }}
           >
-            <Coins value={user.coins} />
+            <Coins value={user.coins} ip={ip} />
+            <Typography
+              variant="h5"
+              sx={{
+                ml: 3,
+                mb: 1,
+              }}
+            >
+              Total Pets: {user.pets.length}
+            </Typography>
             <BaseTextField label="Search" value={search} setValue={setSearch} />
             <Box
               sx={{
@@ -84,11 +124,11 @@ const MyPets: NextPage = ({
                     !search ||
                     title.toLowerCase().includes(search.toLowerCase())
                 )
-                .map((title) => (
+                .map((title, index) => (
                   <PetCard
                     src={pets[title as keyof typeof pets]}
                     title={title}
-                    key={title}
+                    key={index + "-" + title}
                   />
                 ))}
             </Box>

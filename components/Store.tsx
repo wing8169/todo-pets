@@ -12,53 +12,31 @@ type AppProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   coins: number;
+  ip: string;
 };
 
-const Store = ({ open, setOpen, coins }: AppProps) => {
+const Store = ({ open, setOpen, coins, ip }: AppProps) => {
   const handleClose = () => {
     setOpen(false);
   };
 
   return (
-    <Dialog open={open}>
-      <AppBar sx={{ position: "relative", backgroundColor: "#5bb36e" }}>
-        <Toolbar
-          sx={{
-            backgroundColor: "#5bb36e",
-          }}
-        >
-          <IconButton
-            edge="start"
-            onClick={handleClose}
-            aria-label="close"
-            color="inherit"
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography
-            sx={{ ml: 2, flex: 1, color: "white" }}
-            variant="h6"
-            component="div"
-          >
-            Draw a Wish
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    <Dialog onClose={handleClose} open={open}>
       <Box
         sx={{
+          display: "flex",
+          flexDirection: "column",
+          p: 5,
           backgroundImage: `url(${bg.src})`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          maxWidth: "100vw",
-          p: 10,
-          width: 300,
-          height: 300,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          gap: 3,
         }}
       >
-        <ChestButton coins={coins} />
+        <Typography variant="h5" sx={{ color: "#4E4E4E" }}>
+          Draw Your Rare Pets!
+        </Typography>
+        <ChestButton coins={coins} ip={ip} />
       </Box>
     </Dialog>
   );

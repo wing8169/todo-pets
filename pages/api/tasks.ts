@@ -19,7 +19,6 @@ export default async function handler(
   const { method } = req;
   const query: SearchQueryDto = req.query;
   const body: Task = req.body;
-  console.log(res.socket.server.io);
 
   switch (method) {
     // GET tasks will return all tasks
@@ -62,6 +61,14 @@ export default async function handler(
             claimed: false,
           },
         });
+        // emit socket event to notify all users on the update
+        // TODO: Send to the task owner only
+        try {
+          // @ts-ignore
+          res.socket.server.io.emit("task", task);
+        } catch (err) {
+          console.log(err);
+        }
         // return ok
         return res.status(200).json(task);
       } catch (err) {

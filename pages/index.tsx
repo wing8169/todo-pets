@@ -16,8 +16,9 @@ import Toolbar from "../components/Toolbar";
 import TaskComponent from "../components/Task";
 import moment from "moment";
 import { User, Task } from "../interfaces";
-import socketClient, { Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import io from "socket.io-client";
+
 let socket: Socket;
 
 const Home: NextPage = ({
@@ -34,29 +35,59 @@ const Home: NextPage = ({
 
   // on site load, connect to the socket server
   useEffect(() => {
-    // socket = socketClient("/api/sockets");
-    // // new connection
-    // socket.on("connection", (d) => {
-    //   console.log(d);
-    //   // attempt to login to server
-    //   // const myId = localStorage.getItem("socketId")
-    //   //   ? localStorage.getItem("socketId")
-    //   //   : uuidv4();
-    //   // localStorage.setItem("socketId", myId);
-    //   // newSocket.emit("arena-join", myId, (ack) => {});
-    // });
-  }, []);
-
-  useEffect(() => {
     socketInitializer();
+    // clean up socket
+    return function cleanup() {
+      console.log("cleaning up socket");
+      try {
+        socket.disconnect();
+      } catch (err) {
+        // if socket disconnect fails, it is fine
+      }
+    };
   }, []);
 
   const socketInitializer = async () => {
+    // connect to socket server
     await fetch("/api/sockets");
     socket = io();
 
-    socket.on("connect", () => {
-      console.log("connected");
+    // on task event
+    socket.on("task", (task) => {
+      if (task.ipAddress !== ip) return; // skip task that is not owned
+      setTasks((prev) => {
+        // check if task exists in the tasks state
+        const existingTask = prev.find((t) => t.id === task.id);
+        if (!existingTask)
+          return [task, ...prev].sort((a, b) => {
+            // task sorting
+            if (a.status !== b.status) {
+              if (a.status) return 1;
+              return -1;
+            }
+            if (a.dueAt > b.dueAt) return 1;
+            return -1;
+          });
+        // check if existingTask lastModifiedAt is more than task
+        if (existingTask.lastModifiedAt >= task.lastModifiedAt) return prev;
+        // patch the tasks
+        return [task, ...prev.filter((p) => p.id !== task.id)].sort((a, b) => {
+          // task sorting
+          if (a.status !== b.status) {
+            if (a.status) return 1;
+            return -1;
+          }
+          if (a.dueAt > b.dueAt) return 1;
+          return -1;
+        });
+      });
+    });
+
+    // on user event
+    socket.on("user", (user) => {
+      if (user.ipAddress !== ip) return; // skip user that is not owned
+      // update coins
+      setUser((prev) => ({ ...prev, coins: user.coins }));
     });
   };
 
@@ -88,7 +119,7 @@ const Home: NextPage = ({
                 dueAt: "asc",
               },
             ]),
-            filters: JSON.stringify({ ipAddress: ip, deleted: false }),
+            filters: JSON.stringify({ ipAddress: ip }),
           })}`,
           {
             method: "GET",
@@ -135,7 +166,7 @@ const Home: NextPage = ({
               mb: 2,
             }}
           >
-            <Coins value={user.coins} />
+            <Coins value={user.coins} ip={ip} />
             <BaseTextField label="Search" value={search} setValue={setSearch} />
             <Toolbar
               header="Today"
@@ -143,8 +174,9 @@ const Home: NextPage = ({
               canCreate={true}
               data={tasks.filter(
                 (task) =>
-                  !search ||
-                  task.title.toLowerCase().includes(search.toLowerCase())
+                  !task.deleted &&
+                  (!search ||
+                    task.title.toLowerCase().includes(search.toLowerCase()))
               )}
               ip={ip}
             />
@@ -152,8 +184,9 @@ const Home: NextPage = ({
               .filter((task) => moment(task.dueAt).isSame(new Date(), "day"))
               .filter(
                 (task) =>
-                  !search ||
-                  task.title.toLowerCase().includes(search.toLowerCase())
+                  !task.deleted &&
+                  (!search ||
+                    task.title.toLowerCase().includes(search.toLowerCase()))
               )
               .map((task) => (
                 <TaskComponent
@@ -177,8 +210,9 @@ const Home: NextPage = ({
               .filter((task) => !moment(task.dueAt).isSame(new Date(), "day"))
               .filter(
                 (task) =>
-                  !search ||
-                  task.title.toLowerCase().includes(search.toLowerCase())
+                  !task.deleted &&
+                  (!search ||
+                    task.title.toLowerCase().includes(search.toLowerCase()))
               )
               .map((task) => (
                 <TaskComponent

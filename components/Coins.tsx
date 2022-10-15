@@ -2,15 +2,28 @@ import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import coins from "../public/coins.png";
 import Store from "./Store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import "animate.css";
 
 type AppProps = {
   value: number;
+  ip: string;
 };
 
 // Coins component
-const Coins = ({ value }: AppProps) => {
+const Coins = ({ value, ip }: AppProps) => {
   const [open, setOpen] = useState(false);
+  const [classes, setClasses] = useState(
+    "animate__animated animate__heartBeat"
+  );
+
+  useEffect(() => {
+    // whenever the coin value changes, animate heartbeat effect
+    setClasses("");
+    setTimeout(() => {
+      setClasses("animate__animated animate__heartBeat");
+    }, 200);
+  }, [value]);
 
   return (
     <Box
@@ -32,12 +45,14 @@ const Coins = ({ value }: AppProps) => {
           // on click, open the store modal
           setOpen(true);
         }}
+        className={classes}
       >
         {value}
       </Typography>
       <Image
         src={coins}
         style={{ cursor: "pointer" }}
+        objectFit="contain"
         width={32}
         height={32}
         onClick={() => {
@@ -45,7 +60,7 @@ const Coins = ({ value }: AppProps) => {
           setOpen(true);
         }}
       />
-      <Store open={open} setOpen={setOpen} coins={value} />
+      <Store open={open} setOpen={setOpen} coins={value} ip={ip} />
     </Box>
   );
 };

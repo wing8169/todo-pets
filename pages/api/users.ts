@@ -63,6 +63,14 @@ export default async function handler(
             pets: [],
           },
         });
+        // emit socket event to notify all users on the update
+        // TODO: Send to the user only
+        try {
+          // @ts-ignore
+          res.socket.server.io.emit("user", user);
+        } catch (err) {
+          console.log(err);
+        }
         // return ok
         return res.status(200).json(user);
       } catch (err) {

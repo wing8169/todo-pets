@@ -64,6 +64,14 @@ export default async function handler(
               pets: user.pets,
             },
           });
+          // emit socket event to notify all users on the update
+          // TODO: Send to the user only
+          try {
+            // @ts-ignore
+            res.socket.server.io.emit("user", user);
+          } catch (err) {
+            console.log(err);
+          }
         }
         // update task
         await prisma.task.update({
@@ -81,6 +89,14 @@ export default async function handler(
             claimed: existingTask.claimed,
           },
         });
+        // emit socket event to notify all users on the update
+        // TODO: Send to the task owner only
+        try {
+          // @ts-ignore
+          res.socket.server.io.emit("task", existingTask);
+        } catch (err) {
+          console.log(err);
+        }
         // return updated task
         return res.status(200).json(existingTask);
       } catch (err) {
@@ -114,6 +130,14 @@ export default async function handler(
             claimed: existingTask.claimed,
           },
         });
+        // emit socket event to notify all users on the update
+        // TODO: Send to the task owner only
+        try {
+          // @ts-ignore
+          res.socket.server.io.emit("task", existingTask);
+        } catch (err) {
+          console.log(err);
+        }
         // return updated task
         return res.status(200).json(existingTask);
       } catch (err) {
