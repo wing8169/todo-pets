@@ -1,52 +1,97 @@
 import { Box, Typography, Checkbox } from "@mui/material";
 import moment from "moment";
+import UpdateTaskForm from "./UpdateTaskForm";
+import { useState } from "react";
 
 type AppProps = {
+  id: string;
   title: string;
   status?: boolean;
   dueDate: Date;
 };
 
 // Task
-const Task = ({ title, status, dueDate }: AppProps) => (
-  <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      padding: 3,
-      color: "#4E4E4E",
-      gap: 3,
-      borderRadius: 3,
-      background: "white",
-      margin: 1,
-      marginLeft: 3,
-      marginRight: 3,
-      cursor: "pointer",
-      justifyContent: "space-between",
-    }}
-  >
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-      }}
-    >
-      <Checkbox checked={status} />
-      <Typography>{title}</Typography>
-    </Box>
-    <Typography
-      sx={{
-        alignSelf: "flex-end",
-        justifySelf: "flex-end",
-        minWidth: 100,
-        color:
-          moment().diff(dueDate, "days") > 0 && !status ? "red" : "#4E4E4E",
-      }}
-    >
-      {moment(dueDate).format("YYYY-MM-DD")}
-    </Typography>
-  </Box>
-);
+const Task = ({ id, title, status, dueDate }: AppProps) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          padding: 3,
+          color: "#4E4E4E",
+          gap: 3,
+          borderRadius: 3,
+          background: "white",
+          margin: 1,
+          marginLeft: 3,
+          marginRight: 3,
+          cursor: "pointer",
+          justifyContent: "space-between",
+        }}
+        onClick={(e) => {
+          setOpen(true);
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <Checkbox
+            checked={status}
+            onClick={(e) => {
+              e.stopPropagation();
+              // Patch task
+              fetch(`/api/tasks/${id}`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  title,
+                  dueAt: dueDate,
+                  status: !status,
+                }),
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error("Network Error.");
+                  }
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            }}
+          />
+          <Typography>{title}</Typography>
+        </Box>
+        <Typography
+          sx={{
+            alignSelf: "flex-end",
+            justifySelf: "flex-end",
+            minWidth: 100,
+            color:
+              moment().diff(dueDate, "days") > 0 && !status ? "red" : "#4E4E4E",
+          }}
+        >
+          {moment(dueDate).format("YYYY-MM-DD")}
+        </Typography>
+      </Box>
+      <UpdateTaskForm
+        open={open}
+        setOpen={setOpen}
+        id={id}
+        title={title}
+        status={status}
+        dueAt={dueDate}
+      />
+    </>
+  );
+};
 
 export default Task;

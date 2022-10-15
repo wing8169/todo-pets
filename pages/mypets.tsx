@@ -1,7 +1,11 @@
-import type { NextPage } from "next";
+import type {
+  NextPage,
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+} from "next";
 import Head from "next/head";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import Background from "../components/Background";
 import Panel from "../components/Panel";
 import SideBar from "../components/SideBar";
@@ -10,9 +14,41 @@ import { Box } from "@mui/material";
 import BaseTextField from "../components/BaseTextField";
 import PetCard from "../components/PetCard";
 import pets from "../public/pokemons.json";
+import { User } from "../interfaces";
 
-const MyPets: NextPage = () => {
+const MyPets: NextPage = ({
+  ip,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [search, setSearch] = useState("");
+  const [user, setUser] = useState<User>({
+    id: "",
+    ipAddress: "",
+    coins: 0,
+    pets: [],
+  });
+
+  useEffect(() => {
+    // on site load, create / get user data by ip address
+    fetch("/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ipAddress: ip }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network Error.");
+        }
+        // set user
+        response.json().then((data) => {
+          setUser(data);
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   return (
     <Fragment>
@@ -33,7 +69,7 @@ const MyPets: NextPage = () => {
               flex: 1,
             }}
           >
-            <Coins value={1050} />
+            <Coins value={user.coins} />
             <BaseTextField label="Search" value={search} setValue={setSearch} />
             <Box
               sx={{
@@ -42,7 +78,7 @@ const MyPets: NextPage = () => {
                 justifyContent: "center",
               }}
             >
-              {Object.keys(pets)
+              {user.pets
                 .filter(
                   (title) =>
                     !search ||
@@ -61,6 +97,17 @@ const MyPets: NextPage = () => {
       </Background>
     </Fragment>
   );
+};
+
+// get client IP address (::1 if localhost)
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const forwarded = req.headers["x-forwarded-for"];
+  const ip = forwarded ? forwarded : req.connection.remoteAddress;
+  return {
+    props: {
+      ip,
+    },
+  };
 };
 
 export default MyPets;

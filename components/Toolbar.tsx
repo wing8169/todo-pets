@@ -1,17 +1,22 @@
 import { Box, Typography } from "@mui/material";
+import { useState } from "react";
 import Image from "next/image";
 import exportLogo from "../public/export.png";
 import createLogo from "../public/create.png";
+import CreateTaskForm from "./CreateTaskForm";
 
 type AppProps = {
   header?: string;
   canExport?: boolean;
   canCreate?: boolean;
   data?: Object;
+  ip: string;
 };
 
 // Toolbar
-const Toolbar = ({ header, canExport, canCreate, data }: AppProps) => {
+const Toolbar = ({ header, canExport, canCreate, data, ip }: AppProps) => {
+  const [open, setOpen] = useState(false);
+
   const exportData = () => {
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
       JSON.stringify(data)
@@ -35,6 +40,7 @@ const Toolbar = ({ header, canExport, canCreate, data }: AppProps) => {
         color: "#4E4E4E",
       }}
     >
+      <CreateTaskForm open={open} setOpen={setOpen} ip={ip} />
       {!!header && <Typography variant="h5">{header}</Typography>}
       <Box
         sx={{
@@ -62,7 +68,9 @@ const Toolbar = ({ header, canExport, canCreate, data }: AppProps) => {
             height={24}
             style={{
               cursor: "pointer",
-              // TODO: On click create
+            }}
+            onClick={() => {
+              setOpen(true); // On click, open the create task dialog
             }}
           />
         )}

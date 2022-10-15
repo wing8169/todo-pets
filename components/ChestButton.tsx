@@ -1,13 +1,8 @@
-import { Box, Typography } from "@mui/material";
-import Image from "next/image";
-import Store from "./Store";
+import { Box } from "@mui/material";
 import { useState } from "react";
-
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import { purple } from "@mui/material/colors";
 import chest from "../public/chest.json";
 import Lottie from "lottie-react";
 

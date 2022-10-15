@@ -18,11 +18,13 @@ model User {
 }
 
 model Task {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String @db.ObjectId
-  title     String
-  status    Boolean
-  deleted   Boolean
-  createdAt DateTime
-  dueAt     DateTime
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  ipAddress      String
+  title          String
+  status         Boolean
+  deleted        Boolean
+  createdAt      DateTime
+  lastModifiedAt DateTime
+  dueAt          DateTime
+  claimed        Boolean
 }

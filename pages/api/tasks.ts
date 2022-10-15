@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-import { User } from "../../interfaces";
-
-const prisma = new PrismaClient();
+import { Task } from "../../interfaces";
 
 // search query type
 class SearchQueryDto {
@@ -12,16 +10,19 @@ class SearchQueryDto {
   limit?: number;
 }
 
+const prisma = new PrismaClient();
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { method } = req;
   const query: SearchQueryDto = req.query;
-  const body: User = req.body;
+  const body: Task = req.body;
+  console.log(res.socket.server.io);
 
   switch (method) {
-    // GET users will return all users
+    // GET tasks will return all tasks
     case "GET":
       const { sort, filters, offset, limit } = query;
 
@@ -42,29 +43,27 @@ export default async function handler(
       if (!!limit) {
         prismaQuery["take"] = limit;
       }
-      const result = await prisma.user.findMany(prismaQuery);
-      return res.status(200).json(result);
-    // POST users will return the user by its ip address (create a new user if the ip address is a new one)
+      const result = await prisma.task.findMany(prismaQuery);
+      res.status(200).json(result);
+      break;
+    // POST tasks will create a new task, and return the created object
     case "POST":
       try {
-        // check if user exists already, if yes, return the user object
-        const existingUser = await prisma.user.findFirst({
-          where: {
-            ipAddress: body.ipAddress,
-          },
-        });
-        // user exists, return ok
-        if (!!existingUser) return res.status(200).json(existingUser);
-        // user does not exist, create a new user
-        const user = await prisma.user.create({
+        // create a new task
+        const task = await prisma.task.create({
           data: {
             ipAddress: body.ipAddress,
-            coins: 0,
-            pets: [],
+            title: body.title,
+            status: false,
+            deleted: false,
+            createdAt: new Date(),
+            lastModifiedAt: new Date(),
+            dueAt: body.dueAt,
+            claimed: false,
           },
         });
         // return ok
-        return res.status(200).json(user);
+        return res.status(200).json(task);
       } catch (err) {
         console.log(err);
         return res.status(403).json({ err: "403 Bad Request" });
