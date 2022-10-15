@@ -29,7 +29,13 @@ const PetCard = ({ src, title }: AppProps) => {
         borderRadius: 3,
       }}
     >
-      <Image loader={ImageLoader} src={src} width={150} height={150} />
+      <Image
+        loader={ImageLoader}
+        src={src}
+        width={150}
+        height={150}
+        objectFit="contain"
+      />
       <Typography>
         {title.slice(0, 20)} {title.length > 20 ? "..." : ""}
       </Typography>
