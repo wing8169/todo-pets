@@ -165,7 +165,7 @@ const Home: NextPage = ({
       </Head>
       <Background>
         <Panel>
-          <SideBar />
+          <SideBar ip={ip} />
           <Box
             sx={{
               display: "flex",

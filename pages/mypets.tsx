@@ -18,6 +18,9 @@ import { User } from "../interfaces";
 import { Socket } from "socket.io-client";
 import io from "socket.io-client";
 import BaseSnackbar from "../components/BaseSnackbar";
+import { useDispatch } from "react-redux";
+import { snackbarMessage } from "../redux/snackbarSlice";
+import BaseSlider from "../components/BaseSlider";
 
 let socket: Socket;
 
@@ -31,6 +34,7 @@ const MyPets: NextPage = ({
     coins: 0,
     pets: [],
   });
+  const dispatch = useDispatch();
 
   // on site load, connect to the socket server
   useEffect(() => {
@@ -71,6 +75,12 @@ const MyPets: NextPage = ({
       })
       .catch((e) => {
         console.log(e);
+        dispatch(
+          snackbarMessage({
+            message: e.toString(),
+            severity: "error",
+          })
+        );
       });
   }, []);
 
@@ -85,7 +95,7 @@ const MyPets: NextPage = ({
       </Head>
       <Background>
         <Panel>
-          <SideBar />
+          <SideBar ip={ip} />
           <Box
             sx={{
               display: "flex",
@@ -101,8 +111,22 @@ const MyPets: NextPage = ({
                 mb: 1,
               }}
             >
-              Total Pets: {user.pets.length}
+              My Pet Collection: {user.pets.length}
             </Typography>
+            <Typography
+              sx={{
+                ml: 3,
+                mb: 1,
+                fontWeight: "bold",
+              }}
+            >
+              {Array.from(new Set(user.pets)).length} /{" "}
+              {Object.keys(pets).length} Unique Pets
+            </Typography>
+            <BaseSlider
+              value={Array.from(new Set(user.pets)).length}
+              maxValue={Object.keys(pets).length}
+            />
             <BaseTextField label="Search" value={search} setValue={setSearch} />
             <Box
               sx={{

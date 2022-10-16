@@ -1,20 +1,12 @@
-import {
-  Box,
-  Dialog,
-  Typography,
-  Button,
-  Collapse,
-  Alert,
-  IconButton,
-} from "@mui/material";
+import { Box, Dialog, Typography, Button, IconButton } from "@mui/material";
 import BaseDateField from "./BaseDateField";
 import { useState } from "react";
 import BaseTextAreaField from "./BaseTextAreaField";
 import bg from "../public/bg.png";
-import { styled } from "@mui/material/styles";
-import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useDispatch } from "react-redux";
+import { snackbarMessage } from "../redux/snackbarSlice";
 
 type AppProps = {
   open: boolean;
@@ -24,15 +16,6 @@ type AppProps = {
   status?: boolean;
   dueAt: Date;
 };
-
-const ColorButton = styled(Button)(({ theme }) => ({
-  alignSelf: "center",
-  backgroundColor: "#D27C2C",
-  "&:hover": {
-    backgroundColor: "#D27C2C",
-  },
-  width: 200,
-}));
 
 // UpdateTaskForm
 const UpdateTaskForm = ({
@@ -45,7 +28,7 @@ const UpdateTaskForm = ({
 }: AppProps) => {
   const [localTitle, setLocalTitle] = useState(title);
   const [localDueAt, setLocalDueAt] = useState(dueAt);
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // update local states whenever the props change
@@ -94,12 +77,22 @@ const UpdateTaskForm = ({
                   if (!response.ok) {
                     throw new Error("Network Error.");
                   }
+                  dispatch(
+                    snackbarMessage({
+                      message: "Successfully deleted the task.",
+                      severity: "success",
+                    })
+                  );
                   // close dialog
-                  setError("");
                   handleClose();
                 })
                 .catch((e) => {
-                  setError(e.toString());
+                  dispatch(
+                    snackbarMessage({
+                      message: e.toString(),
+                      severity: "error",
+                    })
+                  );
                 });
             }}
           >
@@ -117,36 +110,27 @@ const UpdateTaskForm = ({
           value={localDueAt}
           setValue={setLocalDueAt}
         />
-        <Collapse in={!!error}>
-          <Alert
-            severity="error"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setError("");
-                }}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            {error}
-          </Alert>
-        </Collapse>
-        <ColorButton
+        <Button
           variant="contained"
           onClick={(e) => {
             e.preventDefault();
             // Client-side validation
             if (!localTitle) {
-              setError("Title must not be empty!");
+              dispatch(
+                snackbarMessage({
+                  message: "Title must not be empty!",
+                  severity: "error",
+                })
+              );
               return;
             }
             if (!localDueAt) {
-              setError("Due date must not be empty!");
+              dispatch(
+                snackbarMessage({
+                  message: "Due date must not be empty!",
+                  severity: "error",
+                })
+              );
               return;
             }
             // Update task
@@ -165,18 +149,29 @@ const UpdateTaskForm = ({
                 if (!response.ok) {
                   throw new Error("Network Error.");
                 }
+                dispatch(
+                  snackbarMessage({
+                    message: "Successfully updated the task!",
+                    severity: "success",
+                  })
+                );
                 // close dialog
-                setError("");
                 handleClose();
               })
               .catch((e) => {
-                setError(e.toString());
+                dispatch(
+                  snackbarMessage({
+                    message: e.toString(),
+                    severity: "error",
+                  })
+                );
               });
           }}
           size="large"
+          color="warning"
         >
           Update
-        </ColorButton>
+        </Button>
       </Box>
     </Dialog>
   );

@@ -46,6 +46,7 @@ const Coins = ({ value, ip }: AppProps) => {
           setOpen(true);
         }}
         className={classes}
+        variant="h6"
       >
         {value}
       </Typography>
@@ -53,8 +54,8 @@ const Coins = ({ value, ip }: AppProps) => {
         src={coins}
         style={{ cursor: "pointer" }}
         objectFit="contain"
-        width={32}
-        height={32}
+        width={40}
+        height={40}
         onClick={() => {
           // on click, open the store modal
           setOpen(true);

@@ -1,38 +1,46 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import chest from "../public/chest.json";
 import pokemon from "../public/pokemon.json";
 import Lottie from "lottie-react";
 import PetCard from "./PetCard";
 import pokemons from "../public/pokemons.json";
-
-const ColorButton = styled(Button)(({ theme }) => ({
-  backgroundColor: "#D27C2C",
-  "&:hover": {
-    backgroundColor: "#D27C2C",
-  },
-  width: 300,
-}));
+import { useDispatch } from "react-redux";
+import { snackbarMessage } from "../redux/snackbarSlice";
 
 type AppProps = {
   coins: number;
   ip: string;
 };
 
-function ImageLoader({ src }: any) {
-  return `https://img.pokemondb.net/artwork/large/${src}`;
-}
-
 // ChestButton component
 const ChestButton = ({ coins, ip }: AppProps) => {
   const [open, setOpen] = useState(false);
   const [pet, setPet] = useState("");
+  const dispatch = useDispatch();
 
   if (!!pet)
-    return <PetCard src={pokemons[pet as keyof typeof pokemons]} title={pet} />;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <PetCard src={pokemons[pet as keyof typeof pokemons]} title={pet} />
+        <Typography
+          variant="h6"
+          sx={{
+            color: "#4E4E4E",
+          }}
+        >
+          <b>{pet}</b> has joined your family, please take care of it!
+        </Typography>
+      </Box>
+    );
 
   return (
     <Box
@@ -64,22 +72,29 @@ const ChestButton = ({ coins, ip }: AppProps) => {
               })
               .catch((err) => {
                 console.log(err);
+                dispatch(
+                  snackbarMessage({
+                    message: err.toString(),
+                    severity: "error",
+                  })
+                );
               });
           }}
         />
       ) : (
         <Lottie animationData={pokemon} loop={true} />
       )}
-      <ColorButton
+      <Button
         variant="contained"
         onClick={() => {
           setOpen(true);
         }}
         size="large"
+        color="warning"
         disabled={open || coins < 5}
       >
-        {open ? "Granting Your Wish..." : "Spend 5 Coins to Draw Now"}
-      </ColorButton>
+        {open ? "Your New Pet Is Approaching..." : "Get a New Pet (-5 Coins)"}
+      </Button>
     </Box>
   );
 };

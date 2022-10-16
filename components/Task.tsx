@@ -2,6 +2,8 @@ import { Box, Typography, Checkbox } from "@mui/material";
 import moment from "moment";
 import UpdateTaskForm from "./UpdateTaskForm";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { snackbarMessage } from "../redux/snackbarSlice";
 
 type AppProps = {
   id: string;
@@ -13,6 +15,7 @@ type AppProps = {
 // Task
 const Task = ({ id, title, status, dueDate }: AppProps) => {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -30,6 +33,7 @@ const Task = ({ id, title, status, dueDate }: AppProps) => {
           marginRight: 3,
           cursor: "pointer",
           justifyContent: "space-between",
+          boxShadow: "10px 10px 89px -39px rgba(0,0,0,0.75)",
         }}
         onClick={(e) => {
           setOpen(true);
@@ -62,9 +66,21 @@ const Task = ({ id, title, status, dueDate }: AppProps) => {
                   if (!response.ok) {
                     throw new Error("Network Error.");
                   }
+                  dispatch(
+                    snackbarMessage({
+                      message: "Updated the task status",
+                      severity: "success",
+                    })
+                  );
                 })
                 .catch((e) => {
                   console.log(e);
+                  dispatch(
+                    snackbarMessage({
+                      message: e.toString(),
+                      severity: "error",
+                    })
+                  );
                 });
             }}
           />

@@ -30,7 +30,7 @@ const Store = ({ open, setOpen, coins, ip }: AppProps) => {
         }}
       >
         <Typography variant="h5" sx={{ color: "#4E4E4E" }}>
-          Draw Your Rare Pets!
+          Pet Store
         </Typography>
         <ChestButton coins={coins} ip={ip} />
       </Box>

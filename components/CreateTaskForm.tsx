@@ -3,7 +3,6 @@ import BaseDateField from "./BaseDateField";
 import { useState } from "react";
 import BaseTextAreaField from "./BaseTextAreaField";
 import bg from "../public/bg.png";
-import { styled } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
 import { snackbarMessage } from "../redux/snackbarSlice";
 
@@ -12,15 +11,6 @@ type AppProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   ip: string;
 };
-
-const ColorButton = styled(Button)(({ theme }) => ({
-  alignSelf: "center",
-  backgroundColor: "#D27C2C",
-  "&:hover": {
-    backgroundColor: "#D27C2C",
-  },
-  width: 200,
-}));
 
 // CreateTaskForm
 const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
@@ -51,7 +41,7 @@ const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
         </Typography>
         <BaseTextAreaField label="Task" value={title} setValue={setTitle} />
         <BaseDateField label="Due Date" value={dueAt} setValue={setDueAt} />
-        <ColorButton
+        <Button
           variant="contained"
           onClick={(e) => {
             e.preventDefault();
@@ -111,9 +101,10 @@ const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
               });
           }}
           size="large"
+          color="warning"
         >
           Create
-        </ColorButton>
+        </Button>
       </Box>
     </Dialog>
   );
