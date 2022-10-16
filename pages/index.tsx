@@ -18,6 +18,9 @@ import moment from "moment";
 import { User, Task } from "../interfaces";
 import { Socket } from "socket.io-client";
 import io from "socket.io-client";
+import BaseSnackbar from "../components/BaseSnackbar";
+import { useDispatch } from "react-redux";
+import { snackbarMessage } from "../redux/snackbarSlice";
 
 let socket: Socket;
 
@@ -32,19 +35,12 @@ const Home: NextPage = ({
     pets: [],
   });
   const [tasks, setTasks] = useState<Task[]>([]);
+  const dispatch = useDispatch();
 
   // on site load, connect to the socket server
   useEffect(() => {
+    // TODO: Clean up socket on unmount
     socketInitializer();
-    // clean up socket
-    return function cleanup() {
-      console.log("cleaning up socket");
-      try {
-        socket.disconnect();
-      } catch (err) {
-        // if socket disconnect fails, it is fine
-      }
-    };
   }, []);
 
   const socketInitializer = async () => {
@@ -139,10 +135,22 @@ const Home: NextPage = ({
           })
           .catch((e) => {
             console.log(e);
+            dispatch(
+              snackbarMessage({
+                message: e.toString(),
+                severity: "error",
+              })
+            );
           });
       })
       .catch((e) => {
         console.log(e);
+        dispatch(
+          snackbarMessage({
+            message: e.toString(),
+            severity: "error",
+          })
+        );
       });
   }, []);
 
@@ -226,6 +234,7 @@ const Home: NextPage = ({
           </Box>
         </Panel>
       </Background>
+      <BaseSnackbar />
     </Fragment>
   );
 };

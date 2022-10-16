@@ -1,9 +1,5 @@
 import * as React from "react";
 import Dialog from "@mui/material/Dialog";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import { Box, Typography } from "@mui/material";
 import bg from "../public/bg.png";
 import ChestButton from "./ChestButton";

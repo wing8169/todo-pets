@@ -17,6 +17,7 @@ import pets from "../public/pokemons.json";
 import { User } from "../interfaces";
 import { Socket } from "socket.io-client";
 import io from "socket.io-client";
+import BaseSnackbar from "../components/BaseSnackbar";
 
 let socket: Socket;
 
@@ -33,16 +34,8 @@ const MyPets: NextPage = ({
 
   // on site load, connect to the socket server
   useEffect(() => {
+    // TODO: Clean up socket when unmount
     socketInitializer();
-    // clean up socket
-    return function cleanup() {
-      console.log("cleaning up socket");
-      try {
-        socket.disconnect();
-      } catch (err) {
-        // if socket disconnect fails, it is fine
-      }
-    };
   }, []);
 
   const socketInitializer = async () => {
@@ -116,6 +109,7 @@ const MyPets: NextPage = ({
                 display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "center",
+                mb: 3,
               }}
             >
               {user.pets
@@ -135,6 +129,7 @@ const MyPets: NextPage = ({
           </Box>
         </Panel>
       </Background>
+      <BaseSnackbar />
     </Fragment>
   );
 };

@@ -1,18 +1,11 @@
-import {
-  Box,
-  Dialog,
-  Typography,
-  Button,
-  Collapse,
-  Alert,
-  IconButton,
-} from "@mui/material";
+import { Box, Dialog, Typography, Button } from "@mui/material";
 import BaseDateField from "./BaseDateField";
 import { useState } from "react";
 import BaseTextAreaField from "./BaseTextAreaField";
 import bg from "../public/bg.png";
 import { styled } from "@mui/material/styles";
-import CloseIcon from "@mui/icons-material/Close";
+import { useDispatch } from "react-redux";
+import { snackbarMessage } from "../redux/snackbarSlice";
 
 type AppProps = {
   open: boolean;
@@ -34,6 +27,7 @@ const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
   const [title, setTitle] = useState("");
   const [dueAt, setDueAt] = useState(new Date());
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setOpen(false);
@@ -57,36 +51,29 @@ const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
         </Typography>
         <BaseTextAreaField label="Task" value={title} setValue={setTitle} />
         <BaseDateField label="Due Date" value={dueAt} setValue={setDueAt} />
-        <Collapse in={!!error}>
-          <Alert
-            severity="error"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setError("");
-                }}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            {error}
-          </Alert>
-        </Collapse>
         <ColorButton
           variant="contained"
           onClick={(e) => {
             e.preventDefault();
             // Client-side validation
             if (!title) {
-              setError("Title must not be empty!");
+              // show error message
+              dispatch(
+                snackbarMessage({
+                  message: "Title must not be empty!",
+                  severity: "error",
+                })
+              );
               return;
             }
             if (!dueAt) {
-              setError("Due date must not be empty!");
+              // show error message
+              dispatch(
+                snackbarMessage({
+                  message: "Due date must not be empty!",
+                  severity: "error",
+                })
+              );
               return;
             }
             // Create a new task
@@ -101,13 +88,26 @@ const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
                 if (!response.ok) {
                   throw new Error("Network Error.");
                 }
+                // show success message
+                dispatch(
+                  snackbarMessage({
+                    message: "Successfully created a task!",
+                    severity: "success",
+                  })
+                );
                 // close dialog
                 setError("");
                 setTitle("");
                 handleClose();
               })
               .catch((e) => {
-                setError(e.toString());
+                // show error message
+                dispatch(
+                  snackbarMessage({
+                    message: e.toString(),
+                    severity: "error",
+                  })
+                );
               });
           }}
           size="large"
