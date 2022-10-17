@@ -67,7 +67,7 @@ const UpdateTaskForm = ({
             aria-label="delete"
             onClick={() => {
               // Delete task
-              fetch(`/api/tasks/${id}`, {
+              fetch(`/api/task/${id}`, {
                 method: "DELETE",
                 headers: {
                   "Content-Type": "application/json",
@@ -134,7 +134,7 @@ const UpdateTaskForm = ({
               return;
             }
             // Update task
-            fetch(`/api/tasks/${id}`, {
+            fetch(`/api/task/${id}`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",

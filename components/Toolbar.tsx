@@ -7,11 +7,11 @@ type AppProps = {
   canExport?: boolean;
   canCreate?: boolean;
   data?: Object;
-  ip: string;
+  id: string;
 };
 
 // Toolbar
-const Toolbar = ({ header, canExport, canCreate, data, ip }: AppProps) => {
+const Toolbar = ({ header, canExport, canCreate, data, id }: AppProps) => {
   const [open, setOpen] = useState(false);
 
   const exportData = () => {
@@ -37,7 +37,7 @@ const Toolbar = ({ header, canExport, canCreate, data, ip }: AppProps) => {
         color: "#4E4E4E",
       }}
     >
-      <CreateTaskForm open={open} setOpen={setOpen} ip={ip} />
+      <CreateTaskForm open={open} setOpen={setOpen} id={id} />
       {!!header && <Typography variant="h5">{header}</Typography>}
       <Box
         sx={{

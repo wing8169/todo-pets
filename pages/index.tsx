@@ -30,9 +30,11 @@ const Home: NextPage = ({
   const [search, setSearch] = useState("");
   const [user, setUser] = useState<User>({
     id: "",
+    self: "",
     ipAddress: "",
     coins: 0,
     pets: [],
+    newPet: "",
   });
   const [tasks, setTasks] = useState<Task[]>([]);
   const dispatch = useDispatch();
@@ -41,19 +43,21 @@ const Home: NextPage = ({
   useEffect(() => {
     // TODO: Clean up socket on unmount
     socketInitializer();
-  }, []);
+  }, [user.id]);
 
   const socketInitializer = async () => {
+    if (!user.id) return;
     // connect to socket server
     await fetch("/api/sockets");
     socket = io();
 
     // on task event
     socket.on("task", (task) => {
-      if (task.ipAddress !== ip) return; // skip task that is not owned
+      if (task.user !== `/user/${user.id}`) return; // skip task that is not owned
       setTasks((prev) => {
         // check if task exists in the tasks state
         const existingTask = prev.find((t) => t.id === task.id);
+        // if it does not exist, add into the task list
         if (!existingTask)
           return [task, ...prev].sort((a, b) => {
             // task sorting
@@ -103,45 +107,37 @@ const Home: NextPage = ({
         // set user
         response.json().then((data) => {
           setUser(data);
-        });
-        // get all user tasks
-        fetch(
-          `/api/tasks?${new URLSearchParams({
-            sort: JSON.stringify([
-              {
-                status: "asc",
+          // get all user tasks
+          fetch(
+            `/api/user/${data.id}/tasks?${new URLSearchParams({
+              sort: "+status,+dueAt",
+            })}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
               },
-              {
-                dueAt: "asc",
-              },
-            ]),
-            filters: JSON.stringify({ ipAddress: ip }),
-          })}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network Error.");
             }
-            // set tasks
-            response.json().then((data) => {
-              setTasks(data);
+          )
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network Error.");
+              }
+              // set tasks
+              response.json().then((data) => {
+                setTasks(data.contents);
+              });
+            })
+            .catch((e) => {
+              console.log(e);
+              dispatch(
+                snackbarMessage({
+                  message: e.toString(),
+                  severity: "error",
+                })
+              );
             });
-          })
-          .catch((e) => {
-            console.log(e);
-            dispatch(
-              snackbarMessage({
-                message: e.toString(),
-                severity: "error",
-              })
-            );
-          });
+        });
       })
       .catch((e) => {
         console.log(e);
@@ -172,9 +168,13 @@ const Home: NextPage = ({
               flexDirection: "column",
               flex: 1,
               mb: 2,
+              minWidth: {
+                xs: "100%",
+                sm: "50%",
+              },
             }}
           >
-            <Coins value={user.coins} ip={ip} />
+            <Coins value={user.coins} id={user.id} />
             <BaseTextField label="Search" value={search} setValue={setSearch} />
             <Toolbar
               header="Today"
@@ -186,7 +186,7 @@ const Home: NextPage = ({
                   (!search ||
                     task.title.toLowerCase().includes(search.toLowerCase()))
               )}
-              ip={ip}
+              id={user.id}
             />
             {tasks
               .filter((task) => moment(task.dueAt).isSame(new Date(), "day"))

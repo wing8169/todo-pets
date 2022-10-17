@@ -9,11 +9,11 @@ import { snackbarMessage } from "../redux/snackbarSlice";
 type AppProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  ip: string;
+  id: string;
 };
 
 // CreateTaskForm
-const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
+const CreateTaskForm = ({ open, setOpen, id }: AppProps) => {
   const [title, setTitle] = useState("");
   const [dueAt, setDueAt] = useState(new Date());
   const [error, setError] = useState("");
@@ -67,12 +67,12 @@ const CreateTaskForm = ({ open, setOpen, ip }: AppProps) => {
               return;
             }
             // Create a new task
-            fetch("/api/tasks", {
+            fetch(`/api/user/${id}/tasks`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ title, dueAt, ipAddress: ip }),
+              body: JSON.stringify({ title, dueAt }),
             })
               .then((response) => {
                 if (!response.ok) {

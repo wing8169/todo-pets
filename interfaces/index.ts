@@ -1,8 +1,15 @@
+export type Pet = {
+  self: string;
+  name: string;
+};
+
 export type User = {
   id: string;
+  self: string;
   ipAddress: string;
   coins: number;
-  pets: string[];
+  pets: Pet[];
+  newPet: string;
 };
 
 export type Task = {

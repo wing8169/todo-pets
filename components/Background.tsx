@@ -5,7 +5,6 @@ type AppProps = {
   children: React.ReactNode;
 };
 
-// Green linear image background
 const Background = ({ children }: AppProps) => (
   <Box
     sx={{

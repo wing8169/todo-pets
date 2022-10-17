@@ -30,9 +30,11 @@ const MyPets: NextPage = ({
   const [search, setSearch] = useState("");
   const [user, setUser] = useState<User>({
     id: "",
+    self: "",
     ipAddress: "",
     coins: 0,
     pets: [],
+    newPet: "",
   });
   const dispatch = useDispatch();
 
@@ -103,7 +105,7 @@ const MyPets: NextPage = ({
               flex: 1,
             }}
           >
-            <Coins value={user.coins} ip={ip} />
+            <Coins value={user.coins} id={user.id} />
             <Typography
               variant="h5"
               sx={{
@@ -138,15 +140,15 @@ const MyPets: NextPage = ({
             >
               {user.pets
                 .filter(
-                  (title) =>
+                  (pet) =>
                     !search ||
-                    title.toLowerCase().includes(search.toLowerCase())
+                    pet.name.toLowerCase().includes(search.toLowerCase())
                 )
-                .map((title, index) => (
+                .map((pet, index) => (
                   <PetCard
-                    src={pets[title as keyof typeof pets]}
-                    title={title}
-                    key={index + "-" + title}
+                    src={pets[pet.name as keyof typeof pets]}
+                    title={pet.name}
+                    key={index + "-" + pet.name}
                   />
                 ))}
             </Box>

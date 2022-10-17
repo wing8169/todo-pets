@@ -51,7 +51,7 @@ const Task = ({ id, title, status, dueDate }: AppProps) => {
             onClick={(e) => {
               e.stopPropagation();
               // Patch task
-              fetch(`/api/tasks/${id}`, {
+              fetch(`/api/task/${id}`, {
                 method: "PATCH",
                 headers: {
                   "Content-Type": "application/json",

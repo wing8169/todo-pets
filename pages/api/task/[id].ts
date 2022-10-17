@@ -14,20 +14,7 @@ export default async function handler(
       : JSON.stringify(req.query.id);
 
   switch (method) {
-    // GET tasks/:id returns a task by its ID
-    case "GET":
-      try {
-        const existingTask = await prisma.task.findFirstOrThrow({
-          where: {
-            id: id,
-          },
-        });
-        return res.status(200).json(existingTask);
-      } catch (err) {
-        console.log(err);
-        return res.status(404).json({ err: "404 Not Found" });
-      }
-    // PATCH tasks/:id patches the task fields that are modifiable
+    // PATCH tasks/:id patches the task fields
     case "PATCH":
       try {
         const existingTask = await prisma.task.findFirstOrThrow({
@@ -36,8 +23,8 @@ export default async function handler(
           },
         });
         // task exists, patches selected data only
-        existingTask.dueAt = body.dueAt;
-        existingTask.title = body.title;
+        if (!!body.dueAt) existingTask.dueAt = body.dueAt;
+        if (!!body.title) existingTask.title = body.title;
         existingTask.status = body.status;
         existingTask.lastModifiedAt = new Date();
         // if a task is completed and not claimed yet, increase user's coins by 10
@@ -47,7 +34,7 @@ export default async function handler(
           // get user
           const user = await prisma.user.findFirstOrThrow({
             where: {
-              ipAddress: existingTask.ipAddress,
+              id: existingTask.user,
             },
           });
           // update user's coins
@@ -63,10 +50,19 @@ export default async function handler(
             },
           });
           // emit socket event to notify all users on the update
-          // TODO: Send to the user only
           try {
             // @ts-ignore
-            res.socket.server.io.emit("user", user);
+            res.socket.server.io.emit("user", {
+              self: `/user/${user.id}`,
+              id: user.id,
+              ipAddress: user.ipAddress,
+              coins: user.coins,
+              pets: user.pets.map((pet) => ({
+                self: `https://pokemondb.net/pokedex/${pet.toLowerCase()}`,
+                name: pet,
+              })),
+              newPet: `/user/${user.id}/pet`,
+            });
           } catch (err) {
             console.log(err);
           }
@@ -77,7 +73,7 @@ export default async function handler(
             id: existingTask.id,
           },
           data: {
-            ipAddress: existingTask.ipAddress,
+            user: existingTask.user,
             title: existingTask.title,
             status: existingTask.status,
             deleted: existingTask.deleted,
@@ -88,18 +84,39 @@ export default async function handler(
           },
         });
         // emit socket event to notify all users on the update
-        // TODO: Send to the task owner only
         try {
           // @ts-ignore
-          res.socket.server.io.emit("task", existingTask);
+          res.socket.server.io.emit("task", {
+            self: `/task/${existingTask.id}`,
+            id: existingTask.id,
+            user: `/user/${existingTask.user}`,
+            title: existingTask.title,
+            status: existingTask.status,
+            deleted: existingTask.deleted,
+            createdAt: existingTask.createdAt,
+            lastModifiedAt: existingTask.lastModifiedAt,
+            dueAt: existingTask.dueAt,
+            claimed: existingTask.claimed,
+          });
         } catch (err) {
           console.log(err);
         }
         // return updated task
-        return res.status(200).json(existingTask);
+        return res.status(200).json({
+          self: `/task/${existingTask.id}`,
+          id: existingTask.id,
+          user: `/user/${existingTask.user}`,
+          title: existingTask.title,
+          status: existingTask.status,
+          deleted: existingTask.deleted,
+          createdAt: existingTask.createdAt,
+          lastModifiedAt: existingTask.lastModifiedAt,
+          dueAt: existingTask.dueAt,
+          claimed: existingTask.claimed,
+        });
       } catch (err) {
         console.log(err);
-        return res.status(404).json({ err: "404 Not Found" });
+        return res.status(404).json({ err: "Task or User Not Found" });
       }
     // DELETE tasks/:id deletes task by id (set deleted to true)
     case "DELETE":
@@ -118,7 +135,7 @@ export default async function handler(
             id: existingTask.id,
           },
           data: {
-            ipAddress: existingTask.ipAddress,
+            user: existingTask.user,
             title: existingTask.title,
             status: existingTask.status,
             deleted: existingTask.deleted,
@@ -129,21 +146,42 @@ export default async function handler(
           },
         });
         // emit socket event to notify all users on the update
-        // TODO: Send to the task owner only
         try {
           // @ts-ignore
-          res.socket.server.io.emit("task", existingTask);
+          res.socket.server.io.emit("task", {
+            self: `/task/${existingTask.id}`,
+            id: existingTask.id,
+            user: `/user/${existingTask.user}`,
+            title: existingTask.title,
+            status: existingTask.status,
+            deleted: existingTask.deleted,
+            createdAt: existingTask.createdAt,
+            lastModifiedAt: existingTask.lastModifiedAt,
+            dueAt: existingTask.dueAt,
+            claimed: existingTask.claimed,
+          });
         } catch (err) {
           console.log(err);
         }
         // return updated task
-        return res.status(200).json(existingTask);
+        return res.status(200).json({
+          self: `/task/${existingTask.id}`,
+          id: existingTask.id,
+          user: `/user/${existingTask.user}`,
+          title: existingTask.title,
+          status: existingTask.status,
+          deleted: existingTask.deleted,
+          createdAt: existingTask.createdAt,
+          lastModifiedAt: existingTask.lastModifiedAt,
+          dueAt: existingTask.dueAt,
+          claimed: existingTask.claimed,
+        });
       } catch (err) {
         console.log(err);
-        return res.status(404).json({ err: "404 Not Found" });
+        return res.status(404).json({ err: "Task Not Found" });
       }
     default:
-      res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
+      res.setHeader("Allow", ["PATCH", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

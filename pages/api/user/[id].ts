@@ -20,10 +20,21 @@ export default async function handler(
             id: id,
           },
         });
-        return res.status(200).json(existingUser);
+        // format response
+        return res.status(200).json({
+          self: `/user/${existingUser.id}`,
+          id: existingUser.id,
+          ipAddress: existingUser.ipAddress,
+          coins: existingUser.coins,
+          pets: existingUser.pets.map((pet) => ({
+            self: `https://pokemondb.net/pokedex/${pet.toLowerCase()}`,
+            name: pet,
+          })),
+          newPet: `/user/${existingUser.id}/pet`,
+        });
       } catch (err) {
         console.log(err);
-        return res.status(404).json({ err: "404 Not Found" });
+        return res.status(404).json({ err: "User Not Found" });
       }
     default:
       res.setHeader("Allow", ["GET"]);

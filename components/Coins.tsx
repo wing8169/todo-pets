@@ -7,11 +7,10 @@ import "animate.css";
 
 type AppProps = {
   value: number;
-  ip: string;
+  id: string;
 };
 
-// Coins component
-const Coins = ({ value, ip }: AppProps) => {
+const Coins = ({ value, id }: AppProps) => {
   const [open, setOpen] = useState(false);
   const [classes, setClasses] = useState(
     "animate__animated animate__heartBeat"
@@ -61,7 +60,7 @@ const Coins = ({ value, ip }: AppProps) => {
           setOpen(true);
         }}
       />
-      <Store open={open} setOpen={setOpen} coins={value} ip={ip} />
+      <Store open={open} setOpen={setOpen} coins={value} id={id} />
     </Box>
   );
 };

@@ -12,15 +12,15 @@ import { snackbarMessage } from "../redux/snackbarSlice";
 
 type AppProps = {
   coins: number;
-  ip: string;
+  id: string;
 };
 
-// ChestButton component
-const ChestButton = ({ coins, ip }: AppProps) => {
+const StoreContent = ({ coins, id }: AppProps) => {
   const [open, setOpen] = useState(false);
   const [pet, setPet] = useState("");
   const dispatch = useDispatch();
 
+  // display the pet card after drawing
   if (!!pet)
     return (
       <Box
@@ -42,6 +42,7 @@ const ChestButton = ({ coins, ip }: AppProps) => {
       </Box>
     );
 
+  // after animation is done, send request to draw a new pet
   return (
     <Box
       sx={{
@@ -57,16 +58,15 @@ const ChestButton = ({ coins, ip }: AppProps) => {
           animationData={chest}
           loop={false}
           onComplete={() => {
-            fetch("/api/wish", {
+            fetch(`/api/user/${id}/pet`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ ipAddress: ip }),
             })
               .then((resp) => {
                 resp.json().then((data) => {
-                  setPet(data.pet);
+                  setPet(data.name);
                   setOpen(false);
                 });
               })
@@ -105,4 +105,4 @@ const ChestButton = ({ coins, ip }: AppProps) => {
   );
 };
 
-export default ChestButton;
+export default StoreContent;

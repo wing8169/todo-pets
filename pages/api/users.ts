@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 import { User } from "../../interfaces";
 import prisma from "../../prisma/prisma";
 
 // search query type
 class SearchQueryDto {
   sort?: string;
-  filters?: string;
+  ipAddress?: string;
   offset?: number;
   limit?: number;
 }
@@ -22,27 +21,58 @@ export default async function handler(
   switch (method) {
     // GET users will return all users
     case "GET":
-      const { sort, filters, offset, limit } = query;
+      try {
+        const { sort, ipAddress, offset, limit } = query;
 
-      // populate prisma query
-      const prismaQuery: any = {};
-      // sorting
-      if (!!sort) {
-        prismaQuery["orderBy"] = JSON.parse(sort);
+        // populate prisma query
+        const prismaQuery: any = {};
+        // sorting
+        if (!!sort) {
+          // parse sort data
+          const sortArray = sort.split(",");
+          const orderBy = sortArray.map((sorter) => {
+            const order = sorter.slice(0, 1) === "-" ? "desc" : "asc";
+            return { [sorter.slice(1)]: order };
+          });
+          prismaQuery["orderBy"] = orderBy;
+        }
+        // filtering
+        if (!!ipAddress) {
+          prismaQuery["where"] = {
+            ipAddress,
+          };
+        }
+        // pagination
+        if (!!offset) {
+          prismaQuery["skip"] = Number(offset);
+        }
+        if (!!limit) {
+          prismaQuery["take"] = Number(limit);
+        }
+        const results = await prisma.user.findMany(prismaQuery);
+        // format contents
+        const contents = results.map((result) => {
+          return {
+            self: `/user/${result.id}`,
+            id: result.id,
+            ipAddress: result.ipAddress,
+            coins: result.coins,
+            pets: result.pets.map((pet) => ({
+              self: `https://pokemondb.net/pokedex/${pet.toLowerCase()}`,
+              name: pet,
+            })),
+            newPet: `/user/${result.id}/pet`,
+          };
+        });
+
+        return res.status(200).json({
+          self: "User[]",
+          contents,
+        });
+      } catch (err) {
+        console.log(err);
+        return res.status(500).json({ err: "Internal Server Error" });
       }
-      // filtering
-      if (!!filters) {
-        prismaQuery["where"] = JSON.parse(filters);
-      }
-      // pagination
-      if (!!offset) {
-        prismaQuery["skip"] = offset;
-      }
-      if (!!limit) {
-        prismaQuery["take"] = limit;
-      }
-      const result = await prisma.user.findMany(prismaQuery);
-      return res.status(200).json(result);
     // POST users will return the user by its ip address (create a new user if the ip address is a new one)
     case "POST":
       try {
@@ -53,7 +83,18 @@ export default async function handler(
           },
         });
         // user exists, return ok
-        if (!!existingUser) return res.status(200).json(existingUser);
+        if (!!existingUser)
+          return res.status(200).json({
+            self: `/user/${existingUser.id}`,
+            id: existingUser.id,
+            ipAddress: existingUser.ipAddress,
+            coins: existingUser.coins,
+            pets: existingUser.pets.map((pet) => ({
+              self: `https://pokemondb.net/pokedex/${pet.toLowerCase()}`,
+              name: pet,
+            })),
+            newPet: `/user/${existingUser.id}/pet`,
+          });
         // user does not exist, create a new user
         const user = await prisma.user.create({
           data: {
@@ -62,19 +103,18 @@ export default async function handler(
             pets: [],
           },
         });
-        // emit socket event to notify all users on the update
-        // TODO: Send to the user only
-        try {
-          // @ts-ignore
-          res.socket.server.io.emit("user", user);
-        } catch (err) {
-          console.log(err);
-        }
         // return ok
-        return res.status(200).json(user);
+        return res.status(201).json({
+          self: `/user/${user.id}`,
+          id: user.id,
+          ipAddress: user.ipAddress,
+          coins: 0,
+          pets: [],
+          newPet: `/user/${user.id}/pet`,
+        });
       } catch (err) {
         console.log(err);
-        return res.status(403).json({ err: "403 Bad Request" });
+        return res.status(500).json({ err: "Internal Server Error" });
       }
     default:
       // Method not allowed

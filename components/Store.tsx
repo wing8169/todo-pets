@@ -2,16 +2,16 @@ import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import { Box, Typography } from "@mui/material";
 import bg from "../public/bg.png";
-import ChestButton from "./ChestButton";
+import StoreContent from "./StoreContent";
 
 type AppProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   coins: number;
-  ip: string;
+  id: string;
 };
 
-const Store = ({ open, setOpen, coins, ip }: AppProps) => {
+const Store = ({ open, setOpen, coins, id }: AppProps) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -32,7 +32,7 @@ const Store = ({ open, setOpen, coins, ip }: AppProps) => {
         <Typography variant="h5" sx={{ color: "#4E4E4E" }}>
           Pet Store
         </Typography>
-        <ChestButton coins={coins} ip={ip} />
+        <StoreContent coins={coins} id={id} />
       </Box>
     </Dialog>
   );

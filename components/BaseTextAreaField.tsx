@@ -24,7 +24,6 @@ const CssTextField = styled(TextField)({
   },
 });
 
-// BaseTextAreaField
 const BaseTextAreaField = ({ value, setValue, label }: AppProps) => (
   <CssTextField
     InputProps={{ disableUnderline: true }}
