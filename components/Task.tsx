@@ -2,8 +2,8 @@ import { Box, Typography, Checkbox } from "@mui/material";
 import moment from "moment";
 import UpdateTaskForm from "./UpdateTaskForm";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { snackbarMessage } from "../redux/snackbarSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 type AppProps = {
   id: string;
@@ -15,7 +15,7 @@ type AppProps = {
 // Task
 const Task = ({ id, title, status, dueDate }: AppProps) => {
   const [open, setOpen] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <>

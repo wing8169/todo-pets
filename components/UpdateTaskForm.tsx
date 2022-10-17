@@ -5,8 +5,8 @@ import BaseTextAreaField from "./BaseTextAreaField";
 import bg from "../public/bg.png";
 import { useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDispatch } from "react-redux";
 import { snackbarMessage } from "../redux/snackbarSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 type AppProps = {
   open: boolean;
@@ -28,7 +28,7 @@ const UpdateTaskForm = ({
 }: AppProps) => {
   const [localTitle, setLocalTitle] = useState(title);
   const [localDueAt, setLocalDueAt] = useState(dueAt);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // update local states whenever the props change
@@ -65,6 +65,7 @@ const UpdateTaskForm = ({
           </Typography>
           <IconButton
             aria-label="delete"
+            data-testid="deleteTask"
             onClick={() => {
               // Delete task
               fetch(`/api/task/${id}`, {
@@ -169,6 +170,7 @@ const UpdateTaskForm = ({
           }}
           size="large"
           color="warning"
+          data-testid="updateTask"
         >
           Update
         </Button>

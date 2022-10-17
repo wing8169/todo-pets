@@ -30,6 +30,7 @@ const SideBarItem = ({ src, text, route }: AppProps) => {
         }.png`)}
         width={32}
         height={32}
+        alt="Side Bar Item"
       />
       <Typography
         sx={{

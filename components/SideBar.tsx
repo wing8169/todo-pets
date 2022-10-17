@@ -56,7 +56,7 @@ const SideBar = ({ ip }: AppProps) => {
           },
         }}
       >
-        <Image src={logo} />
+        <Image src={logo} alt="Logo" />
       </Box>
       <Typography
         fontWeight="bold"

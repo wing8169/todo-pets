@@ -2,15 +2,16 @@ import * as React from "react";
 import { Alert, Snackbar } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { snackbarMessage } from "../redux/snackbarSlice";
+import { useAppDispatch } from "../redux/hooks";
+import { useSelector } from "react-redux";
 
 export default function BaseSnackbar() {
   const { message, severity } = useSelector(
     (state: RootState) => state.snackbar
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   if (!message) return <></>;
 

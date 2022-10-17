@@ -19,8 +19,8 @@ import { User, Task } from "../interfaces";
 import { Socket } from "socket.io-client";
 import io from "socket.io-client";
 import BaseSnackbar from "../components/BaseSnackbar";
-import { useDispatch } from "react-redux";
 import { snackbarMessage } from "../redux/snackbarSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 let socket: Socket;
 
@@ -37,12 +37,13 @@ const Home: NextPage = ({
     newPet: "",
   });
   const [tasks, setTasks] = useState<Task[]>([]);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // on site load, connect to the socket server
   useEffect(() => {
     // TODO: Clean up socket on unmount
     socketInitializer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id]);
 
   const socketInitializer = async () => {
@@ -148,6 +149,7 @@ const Home: NextPage = ({
           })
         );
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

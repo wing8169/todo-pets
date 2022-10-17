@@ -7,8 +7,8 @@ import pokemon from "../public/pokemon.json";
 import Lottie from "lottie-react";
 import PetCard from "./PetCard";
 import pokemons from "../public/pokemons.json";
-import { useDispatch } from "react-redux";
 import { snackbarMessage } from "../redux/snackbarSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 type AppProps = {
   coins: number;
@@ -18,7 +18,7 @@ type AppProps = {
 const StoreContent = ({ coins, id }: AppProps) => {
   const [open, setOpen] = useState(false);
   const [pet, setPet] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // display the pet card after drawing
   if (!!pet)

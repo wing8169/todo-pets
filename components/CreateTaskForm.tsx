@@ -3,8 +3,8 @@ import BaseDateField from "./BaseDateField";
 import { useState } from "react";
 import BaseTextAreaField from "./BaseTextAreaField";
 import bg from "../public/bg.png";
-import { useDispatch } from "react-redux";
 import { snackbarMessage } from "../redux/snackbarSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 type AppProps = {
   open: boolean;
@@ -16,8 +16,7 @@ type AppProps = {
 const CreateTaskForm = ({ open, setOpen, id }: AppProps) => {
   const [title, setTitle] = useState("");
   const [dueAt, setDueAt] = useState(new Date());
-  const [error, setError] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleClose = () => {
     setOpen(false);
@@ -43,6 +42,7 @@ const CreateTaskForm = ({ open, setOpen, id }: AppProps) => {
         <BaseDateField label="Due Date" value={dueAt} setValue={setDueAt} />
         <Button
           variant="contained"
+          data-testid="createTask"
           onClick={(e) => {
             e.preventDefault();
             // Client-side validation
@@ -86,7 +86,6 @@ const CreateTaskForm = ({ open, setOpen, id }: AppProps) => {
                   })
                 );
                 // close dialog
-                setError("");
                 setTitle("");
                 handleClose();
               })

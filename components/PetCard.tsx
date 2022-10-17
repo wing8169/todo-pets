@@ -45,6 +45,7 @@ const PetCard = ({ src, title }: AppProps) => {
         width={150}
         height={150}
         objectFit="contain"
+        alt="Pet"
       />
       <Typography>
         {title.slice(0, 20)} {title.length > 20 ? "..." : ""}

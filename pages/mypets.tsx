@@ -18,9 +18,9 @@ import { User } from "../interfaces";
 import { Socket } from "socket.io-client";
 import io from "socket.io-client";
 import BaseSnackbar from "../components/BaseSnackbar";
-import { useDispatch } from "react-redux";
 import { snackbarMessage } from "../redux/snackbarSlice";
 import BaseSlider from "../components/BaseSlider";
+import { useAppDispatch } from "../redux/hooks";
 
 let socket: Socket;
 
@@ -36,12 +36,13 @@ const MyPets: NextPage = ({
     pets: [],
     newPet: "",
   });
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // on site load, connect to the socket server
   useEffect(() => {
     // TODO: Clean up socket when unmount
     socketInitializer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const socketInitializer = async () => {
@@ -84,6 +85,7 @@ const MyPets: NextPage = ({
           })
         );
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -136,6 +138,10 @@ const MyPets: NextPage = ({
                 flexWrap: "wrap",
                 justifyContent: "center",
                 mb: 3,
+                minWidth: {
+                  xs: "100vw",
+                  sm: "50%",
+                },
               }}
             >
               {user.pets

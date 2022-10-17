@@ -55,6 +55,7 @@ const Coins = ({ value, id }: AppProps) => {
         objectFit="contain"
         width={40}
         height={40}
+        alt="Coins"
         onClick={() => {
           // on click, open the store modal
           setOpen(true);

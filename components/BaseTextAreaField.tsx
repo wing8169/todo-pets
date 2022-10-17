@@ -27,6 +27,7 @@ const CssTextField = styled(TextField)({
 const BaseTextAreaField = ({ value, setValue, label }: AppProps) => (
   <CssTextField
     InputProps={{ disableUnderline: true }}
+    inputProps={{ "data-testid": "baseTextAreaField" }}
     onChange={(e) => {
       setValue(e.target.value);
     }}
