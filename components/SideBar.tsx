@@ -20,7 +20,7 @@ const SideBar = ({ ip }: AppProps) => {
           xs: "100%",
           sm: 250,
         },
-        height: "100%",
+        height: { xs: "inherit", sm: "100%" },
         background:
           "linear-gradient(117.15deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 100%)",
         backdropFilter: "blur(40px)",

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 import { Task } from "../../interfaces";
+import prisma from "../../prisma/prisma";
 
 // search query type
 class SearchQueryDto {
@@ -9,8 +9,6 @@ class SearchQueryDto {
   offset?: number;
   limit?: number;
 }
-
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,

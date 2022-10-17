@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
 import { User } from "../../interfaces";
 import pets from "../../public/pokemons.json";
-
-const prisma = new PrismaClient();
+import prisma from "../../prisma/prisma";
 
 export default async function handler(
   req: NextApiRequest,

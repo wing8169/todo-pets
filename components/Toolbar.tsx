@@ -1,8 +1,5 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { useState } from "react";
-import Image from "next/image";
-import exportLogo from "../public/export.png";
-import createLogo from "../public/create.png";
 import CreateTaskForm from "./CreateTaskForm";
 
 type AppProps = {
@@ -45,34 +42,29 @@ const Toolbar = ({ header, canExport, canCreate, data, ip }: AppProps) => {
       <Box
         sx={{
           display: "flex",
-          gap: 4,
+          gap: 1,
         }}
       >
         {canExport && (
-          <Image
-            src={exportLogo}
-            width={24}
-            height={24}
-            style={{
-              cursor: "pointer",
-            }}
+          <Button
+            variant="contained"
             onClick={() => {
-              exportData(); // On click, export data into JSON
+              exportData();
             }}
-          />
+            color="warning"
+          >
+            Export
+          </Button>
         )}
         {canCreate && (
-          <Image
-            src={createLogo}
-            width={24}
-            height={24}
-            style={{
-              cursor: "pointer",
-            }}
+          <Button
+            variant="contained"
             onClick={() => {
-              setOpen(true); // On click, open the create task dialog
+              setOpen(true);
             }}
-          />
+          >
+            Add
+          </Button>
         )}
       </Box>
     </Box>

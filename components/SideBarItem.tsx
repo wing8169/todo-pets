@@ -34,6 +34,10 @@ const SideBarItem = ({ src, text, route }: AppProps) => {
       <Typography
         sx={{
           color: router.pathname === route ? "#33AE4E" : "4E4E4E",
+          display: {
+            xs: "none",
+            sm: "block",
+          },
         }}
       >
         {text}

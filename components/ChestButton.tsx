@@ -37,7 +37,7 @@ const ChestButton = ({ coins, ip }: AppProps) => {
             color: "#4E4E4E",
           }}
         >
-          <b>{pet}</b> has joined your family, please take care of it!
+          <b>{pet}</b> has joined your family!
         </Typography>
       </Box>
     );
@@ -82,18 +82,24 @@ const ChestButton = ({ coins, ip }: AppProps) => {
           }}
         />
       ) : (
-        <Lottie animationData={pokemon} loop={true} />
+        <Lottie
+          style={{
+            height: 200,
+            width: 200,
+          }}
+          animationData={pokemon}
+          loop={true}
+        />
       )}
       <Button
         variant="contained"
         onClick={() => {
           setOpen(true);
         }}
-        size="large"
         color="warning"
         disabled={open || coins < 5}
       >
-        {open ? "Your New Pet Is Approaching..." : "Get a New Pet (-5 Coins)"}
+        {open ? "Your New Pet Is Arriving..." : "Get a New Pet (-5 Coins)"}
       </Button>
     </Box>
   );

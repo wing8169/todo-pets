@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { User } from "../../interfaces";
-
-const prisma = new PrismaClient();
+import prisma from "../../prisma/prisma";
 
 // search query type
 class SearchQueryDto {
