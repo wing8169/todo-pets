@@ -1,5 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import { useState } from "react";
+import BigLottie from "./BigLottie";
 import CreateTaskForm from "./CreateTaskForm";
 
 type AppProps = {
@@ -13,6 +14,7 @@ type AppProps = {
 // Toolbar
 const Toolbar = ({ header, canExport, canCreate, data, id }: AppProps) => {
   const [open, setOpen] = useState(false);
+  const [openLottie, setOpenLottie] = useState(false);
 
   const exportData = () => {
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
@@ -38,6 +40,7 @@ const Toolbar = ({ header, canExport, canCreate, data, id }: AppProps) => {
       }}
     >
       <CreateTaskForm open={open} setOpen={setOpen} id={id} />
+      <BigLottie open={openLottie} setOpen={setOpenLottie} />
       {!!header && <Typography variant="h5">{header}</Typography>}
       <Box
         sx={{
@@ -66,6 +69,15 @@ const Toolbar = ({ header, canExport, canCreate, data, id }: AppProps) => {
             Add
           </Button>
         )}
+        <Button
+          variant="contained"
+          onClick={() => {
+            setOpenLottie(true);
+          }}
+          color="secondary"
+        >
+          Open Big Lottie
+        </Button>
       </Box>
     </Box>
   );
