@@ -62,6 +62,7 @@ export default async function handler(
               name: pet,
             })),
             newPet: `/user/${result.id}/pet`,
+            newFreePet: `/user/${result.id}/newpet`,
           };
         });
 
@@ -94,6 +95,7 @@ export default async function handler(
               name: pet,
             })),
             newPet: `/user/${existingUser.id}/pet`,
+            newFreePet: `/user/${existingUser.id}/newpet`,
           });
         // user does not exist, create a new user
         const user = await prisma.user.create({
@@ -111,6 +113,7 @@ export default async function handler(
           coins: 0,
           pets: [],
           newPet: `/user/${user.id}/pet`,
+          newFreePet: `/user/${user.id}/newpet`,
         });
       } catch (err) {
         console.log(err);

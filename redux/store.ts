@@ -4,10 +4,14 @@ import {
   PreloadedState,
 } from "@reduxjs/toolkit";
 import snackbarReducer from "./snackbarSlice";
+import loadingReducer from "./loadingSlice";
+import authReducer from "./authSlice";
 
 // Create the roo reducer
 const rootReducer = combineReducers({
   snackbar: snackbarReducer,
+  loading: loadingReducer,
+  auth: authReducer,
 });
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {

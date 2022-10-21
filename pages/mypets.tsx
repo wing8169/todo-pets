@@ -21,6 +21,7 @@ import BaseSnackbar from "../components/BaseSnackbar";
 import { snackbarMessage } from "../redux/snackbarSlice";
 import BaseSlider from "../components/BaseSlider";
 import { useAppDispatch } from "../redux/hooks";
+import { auth } from "../redux/authSlice";
 
 let socket: Socket;
 
@@ -74,6 +75,8 @@ const MyPets: NextPage = ({
         // set user
         response.json().then((data) => {
           setUser(data);
+          // save user id to redux store
+          dispatch(auth({ id: data.id }));
         });
       })
       .catch((e) => {
@@ -107,7 +110,7 @@ const MyPets: NextPage = ({
               flex: 1,
             }}
           >
-            <Coins value={user.coins} id={user.id} />
+            <Coins value={user.coins} />
             <Typography
               variant="h5"
               sx={{

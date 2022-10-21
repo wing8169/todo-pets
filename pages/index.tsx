@@ -21,6 +21,7 @@ import io from "socket.io-client";
 import BaseSnackbar from "../components/BaseSnackbar";
 import { snackbarMessage } from "../redux/snackbarSlice";
 import { useAppDispatch } from "../redux/hooks";
+import { auth } from "../redux/authSlice";
 
 let socket: Socket;
 
@@ -108,6 +109,8 @@ const Home: NextPage = ({
         // set user
         response.json().then((data) => {
           setUser(data);
+          // save user id to redux store
+          dispatch(auth({ id: data.id }));
           // get all user tasks
           fetch(
             `/api/user/${data.id}/tasks?${new URLSearchParams({
@@ -176,7 +179,7 @@ const Home: NextPage = ({
               },
             }}
           >
-            <Coins value={user.coins} id={user.id} />
+            <Coins value={user.coins} />
             <BaseTextField label="Search" value={search} setValue={setSearch} />
             <Toolbar
               header="Today"
@@ -188,7 +191,6 @@ const Home: NextPage = ({
                   (!search ||
                     task.title.toLowerCase().includes(search.toLowerCase()))
               )}
-              id={user.id}
             />
             {tasks
               .filter((task) => moment(task.dueAt).isSame(new Date(), "day"))

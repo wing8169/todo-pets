@@ -31,6 +31,7 @@ export default async function handler(
             name: pet,
           })),
           newPet: `/user/${existingUser.id}/pet`,
+          newFreePet: `/user/${existingUser.id}/newpet`,
         });
       } catch (err) {
         console.log(err);

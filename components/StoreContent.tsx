@@ -9,16 +9,18 @@ import PetCard from "./PetCard";
 import pokemons from "../public/pokemons.json";
 import { snackbarMessage } from "../redux/snackbarSlice";
 import { useAppDispatch } from "../redux/hooks";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type AppProps = {
   coins: number;
-  id: string;
 };
 
-const StoreContent = ({ coins, id }: AppProps) => {
+const StoreContent = ({ coins }: AppProps) => {
   const [open, setOpen] = useState(false);
   const [pet, setPet] = useState("");
   const dispatch = useAppDispatch();
+  const { id } = useSelector((state: RootState) => state.auth);
 
   // display the pet card after drawing
   if (!!pet)

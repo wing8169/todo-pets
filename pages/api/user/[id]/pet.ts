@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { User } from "../../../../interfaces";
 import pets from "../../../../public/pokemons.json";
 import prisma from "../../../../prisma/prisma";
 
@@ -57,6 +56,7 @@ export default async function handler(
               name: pet,
             })),
             newPet: `/user/${existingUser.id}/pet`,
+            newFreePet: `/user/${existingUser.id}/newpet`,
           });
         } catch (err) {
           console.log(err);

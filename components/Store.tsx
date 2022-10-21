@@ -8,10 +8,9 @@ type AppProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   coins: number;
-  id: string;
 };
 
-const Store = ({ open, setOpen, coins, id }: AppProps) => {
+const Store = ({ open, setOpen, coins }: AppProps) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -32,7 +31,7 @@ const Store = ({ open, setOpen, coins, id }: AppProps) => {
         <Typography variant="h5" sx={{ color: "#4E4E4E" }}>
           Pet Store
         </Typography>
-        <StoreContent coins={coins} id={id} />
+        <StoreContent coins={coins} />
       </Box>
     </Dialog>
   );

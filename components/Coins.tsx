@@ -7,10 +7,9 @@ import "animate.css";
 
 type AppProps = {
   value: number;
-  id: string;
 };
 
-const Coins = ({ value, id }: AppProps) => {
+const Coins = ({ value }: AppProps) => {
   const [open, setOpen] = useState(false);
   const [classes, setClasses] = useState(
     "animate__animated animate__heartBeat"
@@ -61,7 +60,7 @@ const Coins = ({ value, id }: AppProps) => {
           setOpen(true);
         }}
       />
-      <Store open={open} setOpen={setOpen} coins={value} id={id} />
+      <Store open={open} setOpen={setOpen} coins={value} />
     </Box>
   );
 };

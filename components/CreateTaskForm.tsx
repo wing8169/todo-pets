@@ -5,18 +5,20 @@ import BaseTextAreaField from "./BaseTextAreaField";
 import bg from "../public/bg.png";
 import { snackbarMessage } from "../redux/snackbarSlice";
 import { useAppDispatch } from "../redux/hooks";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type AppProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  id: string;
 };
 
 // CreateTaskForm
-const CreateTaskForm = ({ open, setOpen, id }: AppProps) => {
+const CreateTaskForm = ({ open, setOpen }: AppProps) => {
   const [title, setTitle] = useState("");
   const [dueAt, setDueAt] = useState(new Date());
   const dispatch = useAppDispatch();
+  const { id } = useSelector((state: RootState) => state.auth);
 
   const handleClose = () => {
     setOpen(false);
