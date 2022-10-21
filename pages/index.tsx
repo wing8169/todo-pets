@@ -94,6 +94,7 @@ const Home: NextPage = ({
   };
 
   useEffect(() => {
+    if (!ip) return;
     // on site load, create / get user data by ip address
     fetch("/api/users", {
       method: "POST",
@@ -153,7 +154,7 @@ const Home: NextPage = ({
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ip]);
 
   return (
     <Fragment>

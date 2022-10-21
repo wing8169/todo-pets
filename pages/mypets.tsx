@@ -60,6 +60,7 @@ const MyPets: NextPage = ({
   };
 
   useEffect(() => {
+    if (!ip) return;
     // on site load, create / get user data by ip address
     fetch("/api/users", {
       method: "POST",
@@ -89,7 +90,7 @@ const MyPets: NextPage = ({
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ip]);
 
   return (
     <Fragment>

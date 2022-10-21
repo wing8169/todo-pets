@@ -68,6 +68,7 @@ const CreateTaskForm = ({ open, setOpen }: AppProps) => {
               );
               return;
             }
+            if (!id) return;
             // Create a new task
             fetch(`/api/user/${id}/tasks`, {
               method: "POST",

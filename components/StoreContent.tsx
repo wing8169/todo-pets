@@ -60,6 +60,7 @@ const StoreContent = ({ coins }: AppProps) => {
           animationData={chest}
           loop={false}
           onComplete={() => {
+            if (!id) return;
             fetch(`/api/user/${id}/pet`, {
               method: "POST",
               headers: {

@@ -50,6 +50,7 @@ const Task = ({ id, title, status, dueDate }: AppProps) => {
             checked={status}
             onClick={(e) => {
               e.stopPropagation();
+              if (!id) return;
               // Patch task
               fetch(`/api/task/${id}`, {
                 method: "PATCH",

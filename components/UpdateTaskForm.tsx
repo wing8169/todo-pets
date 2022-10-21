@@ -67,6 +67,7 @@ const UpdateTaskForm = ({
             aria-label="delete"
             data-testid="deleteTask"
             onClick={() => {
+              if (!id) return;
               // Delete task
               fetch(`/api/task/${id}`, {
                 method: "DELETE",
@@ -134,6 +135,7 @@ const UpdateTaskForm = ({
               );
               return;
             }
+            if (!id) return;
             // Update task
             fetch(`/api/task/${id}`, {
               method: "PATCH",

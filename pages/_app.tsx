@@ -4,13 +4,14 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { setupStore } from "../redux/store";
 import { Provider } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import FreePet from "../components/FreePet";
 import LoadingOverlay from "../components/LoadingOverlay";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [open, setOpen] = useState(false);
+
   return (
     <Provider store={setupStore()}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -23,7 +24,12 @@ function MyApp({ Component, pageProps }: AppProps) {
             setOpen(true);
           }}
           color="secondary"
-          sx={{ position: "absolute", top: 20, right: 20 }}
+          sx={{
+            position: "absolute",
+            top: { xs: 90, sm: 20 },
+            right: { xs: 200, sm: 20 },
+            width: 120,
+          }}
         >
           Free Pet!
         </Button>
