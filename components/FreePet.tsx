@@ -124,6 +124,7 @@ const FreePet = ({ open, setOpen }: AppProps) => {
           });
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [animation, id]);
 
   React.useEffect(() => {
